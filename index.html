@@ -19,12 +19,139 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Hello, world!</h1>
+	<div class="container">
+	  <h1>Lists</h1>
+		<div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		  <!-- Nav tabs -->
+		  <ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#list1" aria-controls="home" role="tab" data-toggle="tab">Список 1 <span class="badge">5</span></a></li>
+			<li role="presentation"><a href="#list2" aria-controls="profile" role="tab" data-toggle="tab">Список 2</a></li>
+			<li role="presentation"><a href="#list3" aria-controls="messages" role="tab" data-toggle="tab">Список 3</a></li>
+			<li role="presentation"><a href="#list4" aria-controls="settings" role="tab" data-toggle="tab">+</a></li>
+		  </ul>
+
+		  <!-- Tab panes -->
+		  <div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="list1">
+				<ul class="list-group">
+					<li class="list-group-item list-group-item-success">
+						<div class="row">
+							<div class="col-xs-10">
+								Finished
+							</div>
+							<div class="col-xs-2">
+								<div class="btn-group pull-right">
+								  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Change <span class="caret"></span>
+								  </button>
+								  <ul class="dropdown-menu">
+									<!--<li><a href="#">Mark as done</a></li>-->
+									<li><a href="#">Mark as undone</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="#">Delete</a></li>
+								  </ul>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item">
+						<div class="row">
+							<div class="col-xs-10">
+								Unfinished
+							</div>
+							<div class="col-xs-2">
+								<div class="btn-group pull-right">
+								  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Change <span class="caret"></span>
+								  </button>
+								  <ul class="dropdown-menu">
+									<li><a href="#">Mark as done</a></li>
+									<!--<li><a href="#">Mark as undone</a></li>-->
+									<li role="separator" class="divider"></li>
+									<li><a href="#">Delete</a></li>
+								  </ul>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li class="list-group-item">Пункт 3</li>
+					<li class="list-group-item">Пункт 4</li>
+					<li class="list-group-item">Пункт 5</li>
+				</ul>
+				<div class="row">
+				  <div class="col-lg-12">
+					<div class="input-group">
+					  <input type="text" class="form-control" placeholder="List item adding">
+					  <span class="input-group-btn">
+						<button class="btn btn-default" type="button">Add</button>
+					  </span>
+					</div><!-- /input-group -->
+				  </div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+			<div role="tabpanel" class="tab-pane" id="list2">
+				<ul class="list-group">
+					<li class="list-group-item">Пункт 2</li>
+					<li class="list-group-item">Пункт 3</li>
+					<li class="list-group-item">Пункт 4</li>
+					<li class="list-group-item">Пункт 5</li>
+				</ul>
+				<div class="row">
+				  <div class="col-lg-12">
+					<div class="input-group">
+					  <input type="text" class="form-control" placeholder="List item adding">
+					  <span class="input-group-btn">
+						<button class="btn btn-default" type="button">Add</button>
+					  </span>
+					</div><!-- /input-group -->
+				  </div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+			<div role="tabpanel" class="tab-pane" id="list3">
+				<ul class="list-group">
+					<li class="list-group-item">Пункт 3</li>
+					<li class="list-group-item">Пункт 4</li>
+					<li class="list-group-item">Пункт 5</li>
+				</ul>
+				<div class="row">
+				  <div class="col-lg-12">
+					<div class="input-group">
+					  <input type="text" class="form-control" placeholder="List item adding">
+					  <span class="input-group-btn">
+						<button class="btn btn-default" type="button">Add</button>
+					  </span>
+					</div><!-- /input-group -->
+				  </div><!-- /.col-lg-12 -->
+				</div><!-- /.row -->
+			</div>
+			<div role="tabpanel" class="tab-pane" id="list4">
+			<h2>Adding list</h2>
+			<div class="row">
+			  <div class="col-lg-12">
+				<div class="input-group">
+				  <input type="text" class="form-control" placeholder="Name of new list">
+				  <span class="input-group-btn">
+					<button class="btn btn-default" type="button">Add list</button>
+				  </span>
+				</div><!-- /input-group -->
+			  </div><!-- /.col-lg-12 -->
+			</div><!-- /.row -->
+			</div>
+		  </div>
+
+		</div>
+    </div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/engine.js"></script>
+	<script>
+	$('.nav-tabs a').click(function (e) {
+	  e.preventDefault()
+	  $(this).tab('show')
+	})
+	</script>
   </body>
 </html>
