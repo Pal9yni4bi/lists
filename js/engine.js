@@ -48,7 +48,12 @@ function prepare_array() {
 }
 var $dom_array = prepare_array();
 // alert($dom_array[0].innerHTML);
-$.each($dom_array, function(index, val) {
-    console.log(index);
-    console.log(val.innerHTML);
+var $lists = $(".lists-names li a");
+console.log($lists);
+// each lists {each item}
+var $victimstring = "{";
+$.each($lists, function(index, val) {
+    $victimstring += "\""+ index + "\":\"" + val.innerHTML + "\"";
 });
+$victimstring += "}";
+console.log($victimstring);
