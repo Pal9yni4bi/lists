@@ -43,3 +43,12 @@ function make_change_button_alive() {
 	$(".mark-as-undone").bind("click", mark_as_undone);
 	$(".delete").bind("click", delete_item);
 }
+function prepare_array() {
+	return $(".item-text").toArray();
+}
+var $dom_array = prepare_array();
+// alert($dom_array[0].innerHTML);
+$.each($dom_array, function(index, val) {
+    console.log(index);
+    console.log(val.innerHTML);
+});
