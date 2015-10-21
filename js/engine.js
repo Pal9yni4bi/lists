@@ -1,3 +1,4 @@
+//заменить children на find
 $(document).ready(function() {
 	$(".add-button").click( function() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
@@ -44,33 +45,25 @@ function make_change_button_alive() {
 	$(".mark-as-undone").bind("click", mark_as_undone);
 	$(".delete").bind("click", delete_item);
 }
-function prepare_array() {
-	return $(".item-text").toArray();
-}
-console.log(prepare_array());
-
-var lists = new Array();
-$(".lists-names li a").each(function(indx) {
-	lists.push($(this).text());
-	console.log(indx);
-	var items = new Array();
-	$(".tab-pane").children().children().children().children(".item-text").each(function() { items.push($(this).text());});
+function save() {
+var lists = {};
+$(".lists-names li a").each(function(indx, el) {
+	lists[$(this).text()] = [];
+	var $current_list = lists[$(this).text()];
+	$(".tab-pane").eq(indx).find(".item-text").each(function(i, e) {$current_list[i] = e.innerHTML});
 });
-	// var items = new Array();
-	// $(".item-text").each(function() {items.push($(this).text());});
-    
-    var data='lists='+JSON.stringify(lists);
-    console.log(data);
-    $.ajax({
-                    type: 'POST',
-                    url: "engine.php",
-                    dataType: 'json',
-                    cache: false,
-                    data: data,
-                    success: function(data) {
-                        alert(data)
-                    }
-                });
-	
-	
+var data=JSON.stringify(lists);
+console.log(data); //for debugging
+$.ajax({
+		type: 'POST',
+		url: "engine.php",
+		dataType: 'json',
+		cache: false,
+		data: "data="+data,
+		success: function(data) {
+			alert(data)
+		}
+	});
+}
+	save();
 });
