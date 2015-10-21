@@ -52,10 +52,17 @@ function make_change_button_alive() {
 }
 function save() {
 var lists = {};
-$(".lists-names-group .lists-name").each(function(indx, el) {
-	lists[$(this).text()] = [];
-	var $current_list = lists[$(this).text()];
-	$(".tab-pane").eq(indx).find(".item-text").each(function(i, e) {$current_list[i] = e.innerHTML});
+$(".lists-names-group .lists-name").each(function(indx,elem) {
+	lists[$(elem).text()] = [];
+	var $current_list = lists[$(elem).text()];
+	$(".tab-pane").eq(indx).find(".item-text").each(function(i, e) {
+		lists[$(elem).text()][i] = [];
+		lists[$(elem).text()][i][0] = $(e).html(); //write text of list item to memory
+		lists[$(elem).text()][i][1] = "0"; //write 0-parameter (=undone) by default
+		if ($(e).parent().parent().hasClass("list-group-item-success")) {
+			lists[$(elem).text()][i][1] = "1"; //write 1-parameter (=done), if item marked as done
+		}
+	});
 });
 var data=JSON.stringify(lists);
 console.log(data); //for debugging
