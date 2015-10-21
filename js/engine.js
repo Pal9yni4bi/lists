@@ -17,7 +17,6 @@ $(".delete").click(delete_item);
  function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
 	var $input = $current_tab.find("input").val();
-	// $current_tab.children("ul.list-group").children(".list-group-item").last().after("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
 	$current_tab.children("ul.list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
 	make_change_button_alive();
 	save();
@@ -75,7 +74,6 @@ $(".lists-names-group .lists-name").each(function(indx,elem) {
 	});
 });
 var data=JSON.stringify(lists);
-console.log(data); //for debugging
 $.ajax({
 		type: 'POST',
 		url: "engine.php",
