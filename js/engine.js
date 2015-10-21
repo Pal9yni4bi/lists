@@ -1,17 +1,27 @@
 $(document).ready(function() {
-	
-$(".add-button").click( function() {
-	var $current_tab = $(this).parent().parent().parent().parent().parent();
-	var $input = $current_tab.find("input").val();
-	$current_tab.children("ul.list-group").children(".list-group-item").last().after("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
-	make_change_button_alive();
-	save();
+
+$(".add-list-button").click( function() {
+	console.log("List adding");
+	var $id = $(".lists-names-group li").length;
+	$(".lists-names-group li").eq(-2).after("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ $(this).parent().parent().children().val() +"</span></a></li>");
+	$(".tab-pane").eq(-2).after("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
+	$(".add-button").bind("click", item_adding);
 });
+
+$(".add-button").click(item_adding)
 $(".edit-text").click(edit_text);
 $(".mark-as-done").click(mark_as_done);
 $(".mark-as-undone").click(mark_as_undone);
 $(".delete").click(delete_item);
 
+ function item_adding() {
+	var $current_tab = $(this).parent().parent().parent().parent().parent();
+	var $input = $current_tab.find("input").val();
+	// $current_tab.children("ul.list-group").children(".list-group-item").last().after("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
+	$current_tab.children("ul.list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
+	make_change_button_alive();
+	save();
+};
 function edit_text() {
 	var $current_item = $(this).parent().parent().parent().parent().children(".col-xs-10");
 	var $edited_text = $current_item.text();
