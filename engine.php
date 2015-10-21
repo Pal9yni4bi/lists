@@ -1,15 +1,14 @@
 <?
-// преобразуем массив $_POST в json сущности
-$json = json_encode($_POST);
 
-//путь и сам файл
-$file = "data.json"
-
-// если файла нет, то создадим его
-
-if( !is_file($file)) {
-	$fp = fopen($file, "w"); // ("r" - считывать "w" - создавать "a" - добовлять к тексту), мы создаем файл
-	fwrite($fp, $json); // записываем json в наш файл
-	fclose ($fp); // закрываем файл
-}
+// echo json_encode($arr);
+ // $other_mass = json_encode($_POST); //генерация значения
+ // $other_mass = json_encode($_POST["checks"]); //генерация значения
+ // $other_mass = json_encode($_POST["lists"]); //генерация значения
+ $lists = $_POST["lists"]; //генерация значения
+     
+     $f = fopen('lists.json', 'w');    //открываем файл
+     fwrite($f, $lists);       // записываем в него сгенерированное значение
+     fclose($f);
+	 
+	 echo $lists;
 ?>

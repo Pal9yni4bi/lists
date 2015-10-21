@@ -1,4 +1,5 @@
-$(".add-button").click( function() {
+$(document).ready(function() {
+	$(".add-button").click( function() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
 	var $input = $current_tab.children().children().children().children("input").val();
 	$current_tab.children("ul.list-group").children(".list-group-item").last().after("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
@@ -46,14 +47,30 @@ function make_change_button_alive() {
 function prepare_array() {
 	return $(".item-text").toArray();
 }
-var $dom_array = prepare_array();
-// alert($dom_array[0].innerHTML);
-var $lists = $(".lists-names li a");
-console.log($lists);
-// each lists {each item}
-var $victimstring = "{";
-$.each($lists, function(index, val) {
-    $victimstring += "\""+ index + "\":\"" + val.innerHTML + "\"";
+console.log(prepare_array());
+
+var lists = new Array();
+$(".lists-names li a").each(function(indx) {
+	lists.push($(this).text());
+	console.log(indx);
+	var items = new Array();
+	$(".tab-pane").children().children().children().children(".item-text").each(function() { items.push($(this).text());});
 });
-$victimstring += "}";
-console.log($victimstring);
+	// var items = new Array();
+	// $(".item-text").each(function() {items.push($(this).text());});
+    
+    var data='lists='+JSON.stringify(lists);
+    console.log(data);
+    $.ajax({
+                    type: 'POST',
+                    url: "engine.php",
+                    dataType: 'json',
+                    cache: false,
+                    data: data,
+                    success: function(data) {
+                        alert(data)
+                    }
+                });
+	
+	
+});
