@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	var $success_box = $(".alert-success");
+	var $error_box = $(".alert-danger");
 
 $.getJSON('../data.json', function(data){
   var items = []; 
@@ -16,9 +18,18 @@ $.getJSON('../data.json', function(data){
 	i++
   });
 make_change_button_alive();
+}).success(function() {
+	$success_box.html("Data has loaded successfull");
+	$success_box.slideToggle(500);
+	$success_box.fadeOut(3000);
+}).error(function() {
+	$error_box.html("Data hadn't loaded successfull");
+	$success_box.slideToggle(500);
+	$(".alert-success").fadeOut(3000);	
 });
 $(".add-list-button").click(function(name) {
 	list_adding($(this).parent().parent().children().val());
+	save();
 });
 $(".add-button").click(item_adding);
 $(".edit-text").click(edit_text);
@@ -35,7 +46,6 @@ function list_adding(name) {
 	}	
 	$(".tab-pane").eq(-2).find(".add-button").on("click", item_adding);
 	count_items_in_list($id);
-	save();
 }
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
@@ -101,11 +111,18 @@ var data=JSON.stringify(lists);
 $.ajax({
 		type: 'POST',
 		url: "engine.php",
-		dataType: 'json',
 		cache: false,
 		data: "data="+data,
-		success: function(data) {
-			alert(data)
+		error: function( xhr, textStatus ) {
+			$error_box.html("Data hadn't saved successfull");
+			$success_box.slideToggle(500);
+			$(".alert-success").fadeOut(3000);	
+			console.log( [ xhr.status, textStatus ] );
+		},
+		success: function() {
+			$success_box.html("Data has saved successfull");
+			$success_box.slideToggle(500);
+			$success_box.fadeOut(3000);
 		}
 	});
 }
