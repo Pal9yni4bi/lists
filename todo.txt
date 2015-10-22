@@ -1,3 +1,5 @@
 1. Добавить возможность удалять списки
 2. Запоминать последний выбранный список
 3. Возможность вернуть только что удалённый пункт списка
+	//todo: fix choosing active list after deleting
+	//todo: fix deleting after loading without choosed name of list

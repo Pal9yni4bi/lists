@@ -54,7 +54,9 @@ function list_name_edit(){
 function list_delete() {
 	var deleted_list = $(".tab-pane.active").detach();
 	var deleted_list_name = $(".lists-names-group li.active").detach();
-	save();	
+	save();
+	//todo: fix choosing active list after deleting
+	//todo: fix deleting after loading without choosed name of list
 	//todo: add posibility of returning
 }
 function item_adding() {
