@@ -1,0 +1,3 @@
+.mark-as-undone {display: none;}
+.list-group-item-success .mark-as-undone {display: list-item;}
+.list-group-item-success .mark-as-done {display: none;}

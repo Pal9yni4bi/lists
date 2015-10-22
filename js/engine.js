@@ -12,6 +12,7 @@ $.getJSON('../data.json', function(data){
 			$(".tab-pane").eq(i).find(".list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10 item-text\">"+v[0]+"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
 			};
 	  });
+	count_items_in_list(i);
 	i++
   });
 make_change_button_alive();
@@ -25,10 +26,12 @@ $(".mark-as-done").click(mark_as_done);
 $(".mark-as-undone").click(mark_as_undone);
 $(".delete").click(delete_item);
 function list_adding(name) {
-	var $id = $(".lists-names-group li").length;
-	$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span></a></li>");
+	var $id = $(".lists-names-group li").length - 1;
+	$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
 	$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
 	$(".tab-pane").eq(-2).find(".add-button").bind("click", item_adding);
+	count_items_in_list($id);
+	save();
 }
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
@@ -47,20 +50,21 @@ function edit_text() {
 function save_text() {
 	$new_text = $(this).parent().parent().children(".item-text").children("input").val();
 	$(this).parent().parent().children(".item-text").text($new_text);
-	$(this).parent().parent().children(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone hidden\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
+	// $(this).parent().parent().children(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone hidden\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
+	$(this).parent().parent().children(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
 	make_change_button_alive();//add context for exclude doubling?
 	save();
 }
 function mark_as_done() {
 	$(this).parent().parent().parent().parent().parent().addClass("list-group-item-success");
-	$(this).parent().children(".mark-as-undone").removeClass("hidden");
-	$(this).parent().children(".mark-as-done").addClass("hidden");
+	// $(this).parent().children(".mark-as-undone").removeClass("hidden");
+	// $(this).parent().children(".mark-as-done").addClass("hidden");
 	save();
 }
 function mark_as_undone() {
 	$(this).parent().parent().parent().parent().parent().removeClass("list-group-item-success");
-	$(this).parent().children(".mark-as-done").removeClass("hidden");
-	$(this).parent().children(".mark-as-undone").addClass("hidden");
+	// $(this).parent().children(".mark-as-done").removeClass("hidden");
+	// $(this).parent().children(".mark-as-undone").addClass("hidden");
 	save();
 }
 function delete_item() {
@@ -69,11 +73,16 @@ function delete_item() {
 	save();
 }
 function make_change_button_alive() {
-	$(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone hidden\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
+	// $(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone hidden\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
+	$(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
 	$(".edit-text").bind("click", edit_text);
 	$(".mark-as-done").bind("click", mark_as_done);
 	$(".mark-as-undone").bind("click", mark_as_undone);
 	$(".delete").bind("click", delete_item);
+}
+function count_items_in_list(i) {
+	var number_of_items = $(".list-group").eq(i).find(".item-text").length;
+	$(".lists-name").eq(i).parent().find(".badge").html(number_of_items);
 }
 function save() {
 var lists = {};
