@@ -28,7 +28,11 @@ $(".delete").click(delete_item);
 function list_adding(name) {
 	var $id = $(".lists-names-group li").length - 1;
 	$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
-	$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
+	if ($id == 0) {
+		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane active\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
+	} else {
+		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
+	}	
 	$(".tab-pane").eq(-2).find(".add-button").on("click", item_adding);
 	count_items_in_list($id);
 	save();
