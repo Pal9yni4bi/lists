@@ -32,6 +32,7 @@ $(".add-list-button").click(function(name) {
 	save();
 });
 $(".add-button").click(item_adding);
+$(".delete-list").click(list_delete);
 $(".edit-text").click(edit_text);
 $(".mark-as-done").click(mark_as_done);
 $(".mark-as-undone").click(mark_as_undone);
@@ -46,6 +47,15 @@ function list_adding(name) {
 	}	
 	$(".tab-pane").eq(-2).find(".add-button").on("click", item_adding);
 	count_items_in_list($id);
+}
+function list_name_edit(){
+	//
+}
+function list_delete() {
+	var deleted_list = $(".tab-pane.active").detach();
+	var deleted_list_name = $(".lists-names-group li.active").detach();
+	save();	
+	//todo: add posibility of returning
 }
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
