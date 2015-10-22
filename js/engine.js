@@ -1,6 +1,6 @@
 $(document).ready(function() {
-	var $success_box = $(".alert-success");
-	var $error_box = $(".alert-danger");
+var $success_box = $(".alert-success");
+var $error_box = $(".alert-danger");
 
 $.getJSON('../data.json', function(data){
   var items = []; 
