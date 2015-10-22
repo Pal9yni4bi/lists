@@ -11,8 +11,7 @@ $.getJSON('../data.json', function(data){
 			} else { 
 			$(".tab-pane").eq(i).find(".list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10 item-text\">"+v[0]+"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
 			};
-	  });//don't working
-    items.push('<li>' + key + ':' + val + '</li>');
+	  });
 	i++
   });
 make_change_button_alive();
