@@ -20,14 +20,10 @@ $.getJSON('../data.json', function(data){
   $(".buttons-area").html($item_edit_button);
   make_change_button_alive();
 }).success(function() {
-	$success_box.html("Data has loaded successfull");
-	$success_box.slideToggle(500);
-	$success_box.fadeOut(3000);
+	$success_box.html("Data has loaded successfull").slideToggle(500).fadeOut(3000);
 }).error(function() {
 	console.log( [ xhr.status, textStatus ] );
-	$error_box.html("Data hadn't loaded successfull");
-	$success_box.slideToggle(500);
-	$(".alert-success").fadeOut(3000);
+	$error_box.html("Data hadn't loaded successfull").slideToggle(500).fadeOut(3000);
 });
 $(".add-list-button").click(function(name) {
 	list_adding($(this).parent().parent().children().val());
@@ -53,12 +49,14 @@ function list_adding(name) {
 	count_items_in_list($id);
 }
 function list_name_edit(){
+	$(".edit-list-name").addClass("disabled").unbind("click");	
 	console.log("list name editing");
 	var $current_tab = $(".lists-names-group .active .lists-name");
 	var $current_name = $current_tab.text();
-	$current_tab.html("<input type =\"text\" value=\"" + $current_name + "\"><button class=\"btn btn-default pull-right\" type=\"submit\">Submit</button>");
+	$current_tab.html("<div class=\"input-group\"><input type =\"text\" class=\"form-control\" value=\"" + $current_name + "\"><span class=\"input-group-btn\"><button class=\"btn btn-default pull-right\" type=\"submit\">Submit</button></span></div>");
 	$current_tab.find("button").on("click", function() {
 		$current_tab.text($current_tab.find("input").val());
+		$(".edit-list-name").removeClass("disabled").on("click", list_name_edit);
 		save();
 	});
 }
@@ -67,6 +65,9 @@ function list_delete() {
 	var deleted_list_name = $(".lists-names-group li.active").detach();
 	$(".tab-pane").eq(0).addClass("active");
 	$(".lists-names-group li").eq(0).addClass("active");
+	if ($(".edit-list-name").hasClass("disabled")) {
+		$(".edit-list-name").removeClass("disabled").on("click", list_name_edit);
+	}
 	save();
 	//todo: add posibility of returning
 }
