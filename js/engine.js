@@ -1,7 +1,7 @@
 $(document).ready(function() {
 var $success_box = $(".alert-success");
 var $error_box = $(".alert-danger");
-
+var $item_edit_button = "<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>"
 $.getJSON('../data.json', function(data){
   var items = []; 
   var i = 0;
@@ -17,7 +17,8 @@ $.getJSON('../data.json', function(data){
 	count_items_in_list(i);
 	i++
   });
-make_change_button_alive();
+  $(".buttons-area").html($item_edit_button);
+  make_change_button_alive();
 }).success(function() {
 	$success_box.html("Data has loaded successfull");
 	$success_box.slideToggle(500);
@@ -52,7 +53,14 @@ function list_adding(name) {
 	count_items_in_list($id);
 }
 function list_name_edit(){
-	//
+	console.log("list name editing");
+	var $current_tab = $(".lists-names-group .active .lists-name");
+	var $current_name = $current_tab.text();
+	$current_tab.html("<input type =\"text\" value=\"" + $current_name + "\"><button class=\"btn btn-default pull-right\" type=\"submit\">Submit</button>");
+	$current_tab.find("button").on("click", function() {
+		$current_tab.text($current_tab.find("input").val());
+		save();
+	});
 }
 function list_delete() {
 	var deleted_list = $(".tab-pane.active").detach();
@@ -65,7 +73,8 @@ function list_delete() {
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
 	var $input = $current_tab.find("input").val();
-	$current_tab.children("ul.list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10 item-text\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
+	$added_item = $current_tab.children("ul.list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10 item-text\">" + $input +"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
+	$added_item.find(".buttons-area").html($item_edit_button);
 	make_change_button_alive();
 	count_items_in_list($current_tab.index());
 	save();
@@ -75,14 +84,13 @@ function edit_text() {
 	var $edited_text = $current_item.text();
 	$current_item.html("<input type=\"text\" class=\"form-control\" value=\""+$edited_text+"\">");
 	$current_item.parent().children(".buttons-area").html("<button class=\"btn btn-default pull-right\" type=\"submit\">Submit</button>");
-	$current_item.parent().children(".buttons-area").children().click(save_text);
-}
-function save_text() {
-	$new_text = $(this).parent().parent().children(".item-text").children("input").val();
-	$(this).parent().parent().children(".item-text").text($new_text);
-	$(this).parent().parent().children(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
-	make_change_button_alive();//add context for exclude doubling?
-	save();
+	$current_item.parent().children(".buttons-area").children().on("click", function() {
+		$new_text = $(this).parent().parent().children(".item-text").children("input").val();
+		$(this).parent().parent().children(".item-text").text($new_text);
+		$(this).parent().parent().children(".buttons-area").html($item_edit_button);
+		make_change_button_alive();//add context for exclude doubling?
+		save();		
+	});
 }
 function mark_as_done() {
 	$(this).parent().parent().parent().parent().parent().addClass("list-group-item-success");
@@ -101,7 +109,6 @@ function delete_item() {
 	save();
 }
 function make_change_button_alive() {
-	$(".buttons-area").html("<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>");
 	$(".edit-text").on("click", edit_text);
 	$(".mark-as-done").on("click", mark_as_done);
 	$(".mark-as-undone").on("click", mark_as_undone);
