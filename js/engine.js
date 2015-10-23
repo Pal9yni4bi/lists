@@ -23,29 +23,44 @@ make_change_button_alive();
 	$success_box.slideToggle(500);
 	$success_box.fadeOut(3000);
 }).error(function() {
+	console.log( [ xhr.status, textStatus ] );
 	$error_box.html("Data hadn't loaded successfull");
 	$success_box.slideToggle(500);
-	$(".alert-success").fadeOut(3000);	
+	$(".alert-success").fadeOut(3000);
 });
 $(".add-list-button").click(function(name) {
 	list_adding($(this).parent().parent().children().val());
 	save();
 });
 $(".add-button").click(item_adding);
+$(".edit-list-name").click(list_name_edit);
+$(".delete-list").click(list_delete);
 $(".edit-text").click(edit_text);
 $(".mark-as-done").click(mark_as_done);
 $(".mark-as-undone").click(mark_as_undone);
 $(".delete").click(delete_item);
 function list_adding(name) {
 	var $id = $(".lists-names-group li").length - 1;
-	$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
 	if ($id == 0) {
-		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane active\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
+		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\" class=\"active\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
+		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane active\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div></div></div></div>");
 	} else {
-		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div><!-- /input-group --></div><!-- /.col-lg-12 --></div><!-- /.row --></div>");
-	}	
+		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
+		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div></div></div></div>");
+	}
 	$(".tab-pane").eq(-2).find(".add-button").on("click", item_adding);
 	count_items_in_list($id);
+}
+function list_name_edit(){
+	//
+}
+function list_delete() {
+	var deleted_list = $(".tab-pane.active").detach();
+	var deleted_list_name = $(".lists-names-group li.active").detach();
+	$(".tab-pane").eq(0).addClass("active");
+	$(".lists-names-group li").eq(0).addClass("active");
+	save();
+	//todo: add posibility of returning
 }
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
@@ -78,7 +93,10 @@ function mark_as_undone() {
 	save();
 }
 function delete_item() {
-	var $deleted_item = $(this).parent().parent().parent().parent().parent().detach();
+	var $deleted_item = $(this).parent().parent().parent().parent().parent();
+	var $list_number = $deleted_item.parent().parent().index();
+	$deleted_item.detach();
+	count_items_in_list($list_number);
 	//add possibility to return deleted item
 	save();
 }
@@ -114,10 +132,10 @@ $.ajax({
 		cache: false,
 		data: "data="+data,
 		error: function( xhr, textStatus ) {
+			console.log( [ xhr.status, textStatus ] );
 			$error_box.html("Data hadn't saved successfull");
 			$success_box.slideToggle(500);
-			$(".alert-success").fadeOut(3000);	
-			console.log( [ xhr.status, textStatus ] );
+			$(".alert-success").fadeOut(3000);
 		},
 		success: function() {
 			$success_box.html("Data has saved successfull");
