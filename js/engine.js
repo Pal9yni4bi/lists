@@ -1,9 +1,9 @@
 $(document).ready(function() {
 var $success_box = $(".alert-success");
 var $error_box = $(".alert-danger");
-var $item_edit_button = "<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>"
+var $item_edit_button = "<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>";
 $.getJSON('../data.json', function(data){
-  var items = []; 
+  // var items = []; 
   var i = 0;
   $.each(data, function(key, val){
 	  list_adding(key);	  
@@ -19,6 +19,9 @@ $.getJSON('../data.json', function(data){
   });
   $(".buttons-area").html($item_edit_button);
   make_change_button_alive();
+  if ($("#new_list").hasClass("active") || $(".lists-names-group li").length === 1) {
+	  	$(".list-control-buttons-group").addClass("hidden");
+	}
 }).success(function() {
 	$success_box.html("Data has loaded successfull").slideToggle(500).fadeOut(3000);
 }).error(function() {
@@ -28,6 +31,7 @@ $.getJSON('../data.json', function(data){
 $(".add-list-button").on("click", function(name) {
 	list_adding($(this).parent().parent().children().val());
 	save();
+	
 });
 $(".add-button").on("click", item_adding);
 $(".edit-list-name").on("click", list_name_edit);
@@ -36,22 +40,21 @@ $(".edit-text").on("click", edit_text);
 $(".mark-as-done").on("click", mark_as_done);
 $(".mark-as-undone").on("click", mark_as_undone);
 $(".delete").on("click", delete_item);
+$(".lists-names-group").on("click", return_list_control);
 function list_adding(name) {
 	var $id = $(".lists-names-group li").length - 1;
 	if ($id == 0) {
-		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\" class=\"active\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
+		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\" class=\"active lists\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
 		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane active\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div></div></div></div>");
 	} else {
-		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
+		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\" class=\"lists\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
 		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div></div></div></div>");
 	}
-	
 	$(".tab-pane").eq(-2).find(".add-button").on("click", item_adding);
 	count_items_in_list($id);
 }
 function list_name_edit(){
-	$(".edit-list-name").addClass("disabled").unbind("click");	
-	console.log("list name editing");
+	$(".edit-list-name").addClass("disabled").unbind("click");
 	var $current_tab = $(".lists-names-group .active .lists-name");
 	var $current_name = $current_tab.text();
 	$current_tab.html("<div class=\"input-group\"><input type =\"text\" class=\"form-control\" value=\"" + $current_name + "\"><span class=\"input-group-btn\"><button class=\"btn btn-default pull-right submit-button\" type=\"submit\">Submit</button></span></div>").find("button").on("click", function() {
@@ -61,6 +64,10 @@ function list_name_edit(){
 	});
 }
 function list_delete() {
+	//nice checking for avoid selfheadshooting
+	if ($("#new_list").hasClass("active") || $(".lists-names-group li").length === 1) {
+		return;
+	}
 	var deleted_list = $(".tab-pane.active").detach();
 	var deleted_list_name = $(".lists-names-group li.active").detach();
 	$(".tab-pane").eq(0).addClass("active");
@@ -70,6 +77,12 @@ function list_delete() {
 	}
 	save();
 	//todo: add posibility of returning
+}
+function return_list_control() {
+	var $list_cntrl_btns_gr = $(".list-control-buttons-group");
+	if (!$("#new_list").parent().hasClass(".active")) {
+		$list_cntrl_btns_gr.removeClass("hidden");
+	}
 }
 function item_adding() {
 	var $current_tab = $(this).parent().parent().parent().parent().parent();
