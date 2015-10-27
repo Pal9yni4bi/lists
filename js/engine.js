@@ -3,12 +3,11 @@ var $success_box = $(".alert-success");
 var $error_box = $(".alert-danger");
 var $item_edit_button = "<div class=\"btn-group pull-right\"><button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Change <span class=\"caret\"></span></button><ul class=\"dropdown-menu\"><li class=\"edit-text\"><a href=\"#\">Edit text</a></li><li class=\"mark-as-done\"><a href=\"#\">Mark as done</a></li><li class=\"mark-as-undone\"><a href=\"#\">Mark as undone</a></li><li role=\"separator\" class=\"divider\"></li><li class=\"delete\"><a href=\"#\">Delete</a></li></ul></div>";
 $.getJSON('../data.json', function(data){
-  // var items = []; 
   var i = 0;
   $.each(data, function(key, val){
 	  list_adding(key);	  
 	  $(val).each(function(k, v){
-		if (v[1] == 1) { 
+		if (v[1] == 1) {
 			$(".tab-pane").eq(i).find(".list-group").append("<li class=\"list-group-item list-group-item-success\"><div class=\"row\"><div class=\"col-xs-10 item-text\">"+v[0]+"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>"); 
 			} else { 
 			$(".tab-pane").eq(i).find(".list-group").append("<li class=\"list-group-item\"><div class=\"row\"><div class=\"col-xs-10 item-text\">"+v[0]+"</div><div class=\"col-xs-2 buttons-area\"></div></div></li>");
@@ -28,10 +27,16 @@ $.getJSON('../data.json', function(data){
 	console.log( [ xhr.status, textStatus ] );
 	$error_box.html("Data hadn't loaded successfull").slideToggle(500).fadeOut(3000);
 });
+$(".form-control").keydown(function(e) {
+    if (e.which == '13') {
+        console.log("Enter pressed");
+		//userfriendly form function will be here
+    }
+});
+
 $(".add-list-button").on("click", function(name) {
 	list_adding($(this).parent().parent().children().val());
 	save();
-	
 });
 $(".add-button").on("click", item_adding);
 $(".edit-list-name").on("click", list_name_edit);
@@ -43,7 +48,7 @@ $(".delete").on("click", delete_item);
 $(".lists-names-group").on("click", return_list_control);
 function list_adding(name) {
 	var $id = $(".lists-names-group li").length - 1;
-	if ($id == 0) {
+	if ($id == 0 && !$("#new_list").hasClass("active")) {
 		$(".lists-names-group li").eq(-1).before("<li role=\"presentation\" class=\"active lists\"><a href=\"#list"+ $id +"\" aria-controls=\"messages\" role=\"tab\" data-toggle=\"tab\"><span class=\"lists-name\">"+ name +"</span> <span class=\"badge\"></span></a></li>");
 		$(".tab-pane").eq(-1).before("<div role=\"tabpanel\" class=\"tab-pane active\" id=\"list"+$id+"\"><ul class=\"list-group\"></ul><div class=\"row\"><div class=\"col-lg-12\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" placeholder=\"List item adding\"><span class=\"input-group-btn\"><button class=\"btn btn-default add-button\" type=\"button\">Add</button></span></div></div></div></div>");
 	} else {
@@ -54,6 +59,10 @@ function list_adding(name) {
 	count_items_in_list($id);
 }
 function list_name_edit(){
+	if ($("#new_list").hasClass("active") || $(".lists-names-group li").length === 1) {
+		$error_box.html("Don't rename control tab!").slideToggle(500).fadeOut(3000);
+		return;
+	}
 	$(".edit-list-name").addClass("disabled").unbind("click");
 	var $current_tab = $(".lists-names-group .active .lists-name");
 	var $current_name = $current_tab.text();
@@ -64,8 +73,8 @@ function list_name_edit(){
 	});
 }
 function list_delete() {
-	//nice checking for avoid selfheadshooting
 	if ($("#new_list").hasClass("active") || $(".lists-names-group li").length === 1) {
+		$error_box.html("Don't delete control tab!").slideToggle(500).fadeOut(3000);
 		return;
 	}
 	var deleted_list = $(".tab-pane.active").detach();
@@ -77,6 +86,9 @@ function list_delete() {
 	}
 	save();
 	//todo: add posibility of returning
+  if ($("#new_list").hasClass("active") || $(".lists-names-group li").length === 1) {
+	  	$(".list-control-buttons-group").addClass("hidden");
+	}
 }
 function return_list_control() {
 	var $list_cntrl_btns_gr = $(".list-control-buttons-group");
@@ -93,14 +105,13 @@ function item_adding() {
 	save();
 }
 function edit_text() {
-	var $current_item = $(this).parent().parent().parent().parent().children(".item-text");
-	var $edited_text = $current_item.text();
-	$current_item.html("<input type=\"text\" class=\"form-control\" value=\""+$edited_text+"\">");
-	$current_item.parent().children(".buttons-area").html("<button class=\"btn btn-default pull-right submit-button\" type=\"submit\">Submit</button>");
-	$current_item.parent().children(".buttons-area").children().on("click", function() {
-		$new_text = $(this).parent().parent().children(".item-text").children("input").val();
-		$(this).parent().parent().children(".item-text").text($new_text);
-		$(this).parent().parent().children(".buttons-area").html($item_edit_button);
+	var $current_item = $(this).parent().parent().parent().parent();
+	var $edited_text = $current_item.children(".item-text").text();
+	$current_item.html("<div class=\"input-group\"><input type=\"text\" class=\"form-control\" value=\""+$edited_text+"\"><span class=\"input-group-btn\"><button class=\"btn btn-default pull-right submit-button\" type=\"submit\">Submit</button></span></div>");
+	$current_item.find("button").on("click", function() {
+		$new_text = $(this).parent().parent().children("input").val();
+		$(this).parent().parent().parent().html("<div class=\"col-xs-10 item-text\">"+$new_text+"</div><div class=\"col-xs-2 buttons-area\"></div>");
+		$current_item.find(".buttons-area").html($item_edit_button);
 		make_change_button_alive();//add context for exclude doubling?
 		save();
 	});
@@ -154,14 +165,10 @@ function save() {
 		data: "data="+data,
 		error: function( xhr, textStatus ) {
 			console.log( [ xhr.status, textStatus ] );
-			$error_box.html("Data hadn't saved successfull");
-			$success_box.slideToggle(500);
-			$(".alert-success").fadeOut(3000);
+			$error_box.html("Data hadn't saved successfull").slideToggle(500).fadeOut(3000);
 		},
 		success: function() {
-			$success_box.html("Data has saved successfull");
-			$success_box.slideToggle(500);
-			$success_box.fadeOut(3000);
+			$success_box.html("Data has saved successfull").slideToggle(500).fadeOut(3000);
 		}
 	});
 }
